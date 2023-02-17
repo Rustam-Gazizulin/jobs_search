@@ -78,7 +78,7 @@ WSGI_APPLICATION = "jobs_search.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "library_db",
+        "NAME": "jobs_search",
         "USER": "postgres",
         "PASSWORD": "qwerty",
         "HOST": "localhost",
