@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "vacancies",
 ]
 
 MIDDLEWARE = [
@@ -76,8 +77,13 @@ WSGI_APPLICATION = "jobs_search.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "library_db",
+        "USER": "postgres",
+        "PASSWORD": "qwerty",
+        "HOST": "localhost",
+        "PORT": "5432",
+
     }
 }
 
