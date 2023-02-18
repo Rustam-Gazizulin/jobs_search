@@ -1,4 +1,16 @@
+from django.contrib.auth.models import User
 from django.db import models
+
+
+class Skill(models.Model):
+    name = models.CharField(max_length=20, verbose_name='Навыки')
+
+    class Meta:
+        verbose_name = 'Навык'
+        verbose_name_plural = 'Навыки'
+
+    def __str__(self):
+        return self.name
 
 
 class Vacancy(models.Model):
@@ -11,6 +23,8 @@ class Vacancy(models.Model):
     text = models.CharField(max_length=100, verbose_name='Описание')
     status = models.CharField(max_length=10, choices=STATUS, default='draft', verbose_name='Статус вакансии')
     created = models.DateField(auto_now_add=True, verbose_name='Дата создания', null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    skills = models.ManyToManyField(Skill)
 
     class Meta:
         verbose_name = 'Вакансия'
