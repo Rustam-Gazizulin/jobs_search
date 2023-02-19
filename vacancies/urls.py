@@ -9,4 +9,5 @@ urlpatterns = [
     path("update/<int:pk>/", views.VacancyUpdateView.as_view()),
     path("create/", views.VacancyCreateView.as_view()),
     path("delete/<int:pk>/", views.VacancyDeleteView.as_view()),
+    path("user/", views.UserVacancyDetailView.as_view()),
 ]
