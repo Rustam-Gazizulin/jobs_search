@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Q, F
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
@@ -24,6 +24,24 @@ class SkillsViewSet(ModelViewSet):
 class VacancyListView(ListAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancyListSerializer
+
+    def get(self, request, *args, **kwargs):
+        vacancy_text = request.GET.get('text', None)
+        if vacancy_text:
+            self.queryset = self.queryset.filter(
+                text__contains=vacancy_text
+            )
+
+        skills = request.GET.getlist('skill', None)
+        skills_q = None
+        for skill in skills:
+            if skills_q is None:
+                skills_q = Q(skills__name__icontains=skill)
+            else:
+                skills_q |= Q(skills__name__icontains=skill)
+        if skills_q:
+            self.queryset = self.queryset.filter(skills_q)
+        return super().get(request, *args, **kwargs)
 
 
 class VacancyDetailView(RetrieveAPIView):
@@ -70,4 +88,14 @@ class UserVacancyDetailView(View):
 
         }
         return JsonResponse(response, safe=False)
+
+
+class VacancyLikeView(UpdateAPIView):
+    queryset = Vacancy.objects.all()
+    serializer_class = VacancyDetailSerializer
+
+    def put(self, request, *args, **kwargs):
+        Vacancy.objects.filter(pk__in=request.data).update(likes=F('likes') + 1)
+
+        return JsonResponse(VacancyDetailSerializer(Vacancy.objects.filter(pk__in=request.data), many=True).data, safe=False)
 

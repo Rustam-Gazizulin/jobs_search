@@ -10,4 +10,5 @@ urlpatterns = [
     path("create/", views.VacancyCreateView.as_view()),
     path("delete/<int:pk>/", views.VacancyDeleteView.as_view()),
     path("user/", views.UserVacancyDetailView.as_view()),
+    path("like/", views.VacancyLikeView.as_view()),
 ]
