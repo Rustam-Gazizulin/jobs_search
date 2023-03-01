@@ -46,7 +46,7 @@ class VacancyCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def is_valid(self, *, raise_exception=False):
-        self._skills = self.initial_data.pop("skills")
+        self._skills = self.initial_data.pop("skills", [])
         return super().is_valid(raise_exception=raise_exception)
 
     def create(self, validated_data):
@@ -75,7 +75,7 @@ class VacancyUpdateSerializer(serializers.ModelSerializer):
         fields = ["id", "text", "status", "slug", "skills", "user", "created"]
 
     def is_valid(self, *, raise_exception=False):
-        self._skills = self.initial_data.pop("skills")
+        self._skills = self.initial_data.pop("skills", [])
         return super().is_valid(raise_exception=raise_exception)
 
     def save(self):
