@@ -1,7 +1,15 @@
+from datetime import date
+
 from django.core.validators import MinValueValidator
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 from users.models import User
+
+
+def chek_date_created(value: date):
+    if value < date.today():
+        raise ValidationError({f'{value} нельзя опубликовать вакансию вчерашним днем'})
 
 
 class Skill(models.Model):
@@ -28,6 +36,7 @@ class Vacancy(models.Model):
     created = models.DateField(auto_now_add=True, verbose_name='Дата создания', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     skills = models.ManyToManyField(Skill)
+    date_published = models.DateField(null=True, validators=[chek_date_created])
 
     likes = models.IntegerField(default=0)
 
