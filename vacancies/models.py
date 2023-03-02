@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from users.models import User
@@ -29,6 +30,8 @@ class Vacancy(models.Model):
     skills = models.ManyToManyField(Skill)
 
     likes = models.IntegerField(default=0)
+
+    min_experience = models.IntegerField(null=True, validators=[MinValueValidator(0)])
 
     class Meta:
         verbose_name = 'Вакансия'
