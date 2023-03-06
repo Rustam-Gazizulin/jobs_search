@@ -18,9 +18,7 @@ class CheckStatusValidator:
 
 class VacancyListSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
-    #     read_only=True,
-    #     source='user.username'
-    # )
+
     skills = serializers.SlugRelatedField(
         read_only=True,
         many=True,

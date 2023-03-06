@@ -2,28 +2,20 @@ from datetime import date
 
 import pytest
 
+from tests.factories import VacancyFactory
 from vacancies.models import Vacancy
+from vacancies.serializers import VacancyListSerializer
 
 
 @pytest.mark.django_db
 def test_vacancy_list(client):
-    vacancy = Vacancy.objects.create(
-        slug="test1",
-        text="test1"
-    )
+    vacancies = VacancyFactory.create_batch(10)
+
     expected_response = {
-        "count": 1,
+        "count": 10,
         "next": None,
         "previous": None,
-        "results": [{
-            "id": vacancy.pk,
-            "text": "test1",
-            "slug": "test1",
-            "status": "draft",
-            "created": date.today().strftime("%Y-%m-%d"),
-            "username": None,
-            "skills": []
-        }]
+        "results": VacancyListSerializer(vacancies, many=True).data
     }
 
     response = client.get("/vacancy/")

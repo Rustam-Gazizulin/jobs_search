@@ -2,9 +2,12 @@ from datetime import date
 
 import pytest
 
+from tests.factories import VacancyFactory
+
 
 @pytest.mark.django_db
-def test_retrieve_vacancy(client, vacancy, hr_token):
+def test_retrieve_vacancy(client, hr_token):
+    vacancy = VacancyFactory.create()
     expected_response = {
         "id": vacancy.pk,
         "text": "test text",
@@ -15,7 +18,7 @@ def test_retrieve_vacancy(client, vacancy, hr_token):
         "likes": 0,
         "min_experience": None,
         "date_published": None,
-        "username": "test",
+        "username": vacancy.username,
     }
 
     response = client.get(
