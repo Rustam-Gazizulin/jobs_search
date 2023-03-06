@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Avg, Q, F
 from django.http import HttpResponse, JsonResponse
 from django.views import View
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -18,6 +19,16 @@ def hello(request):
     return HttpResponse('Hello World')
 
 
+@extend_schema_view(
+    list=extend_schema(
+        description='Retrieve Skill List',
+        summary='Skill list',
+    ),
+    create=extend_schema(
+        description='Create new Skill object',
+        summary='Skill create',
+    ),
+)
 class SkillsViewSet(ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
@@ -26,6 +37,11 @@ class SkillsViewSet(ModelViewSet):
 class VacancyListView(ListAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancyListSerializer
+
+    @extend_schema(
+        description='Retrieve vacancy list (Подробное описание)',
+        summary='Vacancy list (Краткое описание)'
+    )
 
     def get(self, request, *args, **kwargs):
         vacancy_text = request.GET.get('text', None)
@@ -61,6 +77,7 @@ class VacancyCreateView(CreateAPIView):
 class VacancyUpdateView(UpdateAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancyUpdateSerializer
+    http_method_names = ['put']
 
 
 class VacancyDeleteView(DestroyAPIView):
@@ -97,7 +114,9 @@ class UserVacancyDetailView(View):
 class VacancyLikeView(UpdateAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancyDetailSerializer
+    http_method_names = ['put']
 
+    @extend_schema(deprecated=True)
     def put(self, request, *args, **kwargs):
         Vacancy.objects.filter(pk__in=request.data).update(likes=F('likes') + 1)
 
